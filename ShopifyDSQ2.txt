@@ -1,0 +1,24 @@
+Question 2
+a. Number of orders shipped by Speedy Express in total
+SELECT COUNT(*) FROM [Orders]
+WHERE ShipperID == 2
+
+b.Last name of employee with most orders
+SELECT emp.LastName FROM Employees emp
+INNER JOIN 
+  (SELECT EmployeeID, count(EmployeeID) c 
+  FROM [Orders]
+  GROUP BY EmployeeID
+  ORDER BY c DESC 
+  LIMIT 1) ords
+ON emp.EmployeeID == ords.EmployeeID
+
+c. Most ordered product from customers in Germany
+SELECT prod.ProductID, prod.ProductName, SUM(OrderDetails.Quantity) TotalQuantity FROM Products prod
+INNER JOIN OrderDetails ON prod.ProductID == OrderDetails.ProductID
+INNER JOIN Orders ON OrderDetails.OrderID == Orders.OrderID
+INNER JOIN Customers ON Orders.CustomerID == Customers.CustomerID
+	WHERE Customers.Country == "Germany"
+GROUP BY prod.ProductID
+ORDER BY TotalQuantity DESC
+LIMIT 1
